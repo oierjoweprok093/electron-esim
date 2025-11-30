@@ -224,8 +224,8 @@ app.post("/api/check-esim", async (req, res) => {
   }
 });
 
-// Serve the frontend for any GET (fallback)
-app.get("*", (req, res) => {
+// Serve the frontend for any remaining requests (fallback)
+app.use((req, res) => {
   res.sendFile(path.join(publicDir, "index.html"));
 });
 
