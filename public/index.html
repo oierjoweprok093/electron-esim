@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>تحقق من دعم eSIM</title>
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap");
+
+      :root {
+        --bg1: #0a0a0f;
+        --bg2: #111827;
+        --surface: rgba(17, 24, 39, 0.9);
+        --accent: #d97706;
+        --accent-2: #22c55e;
+        --text: #f8fafc;
+        --muted: #cbd5e1;
+        --stroke: #1f2937;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background: radial-gradient(
+            circle at 20% 20%,
+            rgba(217, 119, 6, 0.18),
+            transparent 35%
+          ),
+          radial-gradient(
+            circle at 80% 15%,
+            rgba(234, 179, 8, 0.16),
+            transparent 40%
+          ),
+          linear-gradient(150deg, var(--bg1) 0%, #0b1020 60%, var(--bg2) 100%);
+        color: var(--text);
+        font-family: "Cairo", "Segoe UI", sans-serif;
+      }
+
+      .page {
+        width: min(940px, 100%);
+        min-height: 100vh;
+        margin: 0 auto;
+        padding: 26px 24px 28px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .page::before,
+      .page::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: 0.45;
+        z-index: 0;
+      }
+
+      .page::before {
+        width: 320px;
+        height: 320px;
+        background: rgba(234, 179, 8, 0.24);
+        top: -90px;
+        right: -40px;
+      }
+
+      .page::after {
+        width: 280px;
+        height: 280px;
+        background: rgba(34, 197, 94, 0.18);
+        bottom: -80px;
+        left: -40px;
+      }
+
+      .content {
+        position: relative;
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+      }
+
+      .hero {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .logo {
+        width: 140px;
+        height: 140px;
+        border-radius: 30px;
+        background: radial-gradient(
+          circle at 30% 30%,
+          rgba(255, 255, 255, 0),
+          rgba(15, 23, 42, 0.92)
+        );
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        box-shadow: 0 26px 52px rgba(0, 0, 0, 0.38);
+      }
+
+      .logo img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: rgba(234, 179, 8, 0.18);
+        color: #fef3c7;
+        border: 1px solid rgba(234, 179, 8, 0.5);
+        padding: 7px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.3px;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: clamp(24px, 5vw, 32px);
+        letter-spacing: -0.3px;
+      }
+
+      .lead {
+        color: var(--muted);
+        margin: 0;
+        line-height: 1.7;
+        font-size: 14px;
+      }
+
+      .panel {
+        background: var(--surface);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 18px;
+        padding: 16px;
+        backdrop-filter: blur(6px);
+      }
+
+      .label-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+
+      .label {
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      .input-row {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+
+      input {
+        flex: 1;
+        padding: 12px 14px;
+        border-radius: 12px;
+        border: 1px solid #1f2937;
+        background: #0b1224;
+        color: var(--text);
+        font-size: 14px;
+        outline: none;
+        transition: border 0.2s, box-shadow 0.2s;
+      }
+
+      input:focus {
+        border-color: rgba(234, 179, 8, 0.6);
+        box-shadow: 0 0 0 3px rgba(234, 179, 8, 0.2);
+      }
+
+      button {
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        font-weight: 700;
+        font-size: 14px;
+        transition: transform 0.15s ease, box-shadow 0.2s ease, filter 0.2s ease;
+      }
+
+      button:active {
+        transform: translateY(1px);
+      }
+
+      .btn-primary {
+        background: linear-gradient(135deg, #fbbf24 0%, #d97706 100%);
+        color: #111827;
+        padding: 12px 16px;
+        box-shadow: 0 10px 30px rgba(217, 119, 6, 0.4);
+      }
+
+      .btn-ghost {
+        background: rgba(255, 255, 255, 0.08);
+        color: var(--text);
+        padding: 10px 14px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+      }
+
+      .btn-full {
+        width: 100%;
+        margin-top: 8px;
+      }
+
+      .status {
+        color: var(--muted);
+        font-size: 13px;
+        min-height: 18px;
+        margin: 4px 0;
+      }
+
+      .suggestions {
+        list-style: none;
+        padding: 0;
+        margin: 12px 0 4px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .suggestion {
+        background: rgba(255, 255, 255, 0.03);
+        border: 1px solid var(--stroke);
+        border-radius: 12px;
+        padding: 10px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        cursor: pointer;
+        transition: border 0.2s, transform 0.2s;
+      }
+
+      .suggestion:hover {
+        border-color: rgba(234, 179, 8, 0.6);
+        transform: translateY(-1px);
+      }
+
+      .suggestion-title {
+        font-weight: 700;
+        color: var(--text);
+      }
+
+      .suggestion-brand {
+        color: var(--muted);
+        font-size: 12px;
+      }
+
+      .result-card {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 16px;
+        padding: 14px;
+        line-height: 1.6;
+        font-size: 14px;
+        min-height: 96px;
+      }
+
+      .tag {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 12px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.2px;
+        margin-bottom: 8px;
+      }
+
+      .tag.ok {
+        background: rgba(34, 197, 94, 0.14);
+        color: #86efac;
+        border: 1px solid rgba(34, 197, 94, 0.35);
+      }
+
+      .tag.bad {
+        background: rgba(248, 113, 113, 0.16);
+        color: #fecdd3;
+        border: 1px solid rgba(248, 113, 113, 0.3);
+      }
+
+      .tag.unknown {
+        background: rgba(234, 179, 8, 0.2);
+        color: #fef9c3;
+        border: 1px solid rgba(234, 179, 8, 0.4);
+      }
+
+      .sim-note {
+        color: var(--muted);
+        font-size: 12px;
+        margin-top: 6px;
+      }
+
+      .support-wrap {
+        text-align: center;
+      }
+
+      .support-indicator {
+        width: 160px;
+        height: 160px;
+        margin: 6px auto;
+        position: relative;
+      }
+
+      .support-ring {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 10px solid rgba(255, 255, 255, 0.04);
+        mask: conic-gradient(#000, #000);
+        -webkit-mask: conic-gradient(#000, #000);
+        animation: spin 1s linear infinite;
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+
+      .support-core {
+        position: absolute;
+        inset: 18px;
+        border-radius: 50%;
+        background: linear-gradient(145deg, #0f172a, #0b1224);
+        border: 1px solid var(--stroke);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 56px;
+        font-weight: 900;
+        color: #cbd5e1;
+        box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.4),
+          0 12px 30px rgba(0, 0, 0, 0.35);
+        transition: transform 0.3s ease, background 0.3s ease,
+          border-color 0.3s ease;
+      }
+
+      .support-indicator[data-state="loading"] .support-ring {
+        opacity: 1;
+        border-color: transparent;
+        background: conic-gradient(
+          from 0deg,
+          rgba(234, 179, 8, 0.8),
+          rgba(217, 119, 6, 0.7),
+          rgba(234, 179, 8, 0.8)
+        );
+        -webkit-mask: radial-gradient(transparent 54%, #000 55%);
+        mask: radial-gradient(transparent 54%, #000 55%);
+      }
+
+      .support-indicator[data-state="success"] .support-core {
+        color: #22c55e;
+        background: radial-gradient(
+          circle at 30% 30%,
+          rgba(34, 197, 94, 0.2),
+          #0f172a
+        );
+        border-color: rgba(34, 197, 94, 0.4);
+        transform: scale(1.04);
+      }
+
+      .support-indicator[data-state="fail"] .support-core {
+        color: #f87171;
+        background: radial-gradient(
+          circle at 30% 30%,
+          rgba(248, 113, 113, 0.16),
+          #0f172a
+        );
+        border-color: rgba(248, 113, 113, 0.4);
+        transform: scale(1.04);
+      }
+
+      .support-indicator[data-state="unknown"] .support-core {
+        color: #fef9c3;
+        background: radial-gradient(
+          circle at 30% 30%,
+          rgba(234, 179, 8, 0.2),
+          #0f172a
+        );
+        border-color: rgba(234, 179, 8, 0.5);
+      }
+
+      .support-label {
+        font-weight: 700;
+        letter-spacing: 0.3px;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 768px) {
+        body {
+          padding: 0;
+        }
+        .page {
+          width: 100%;
+          min-height: 100vh;
+          padding: 18px 18px 28px;
+          background: linear-gradient(
+              180deg,
+              rgba(10, 16, 30, 0.95),
+              rgba(5, 9, 21, 0.96)
+            ),
+            radial-gradient(
+              circle at 20% 10%,
+              rgba(234, 179, 8, 0.22),
+              transparent 42%
+            ),
+            radial-gradient(
+              circle at 90% 15%,
+              rgba(34, 197, 94, 0.2),
+              transparent 40%
+            ),
+            #050915;
+          gap: 18px;
+        }
+        .hero {
+          gap: 12px;
+          padding: 4px 0 2px;
+          text-align: center;
+          align-items: center;
+        }
+        .logo {
+          width: 150px;
+          height: 150px;
+          border-radius: 32px;
+        }
+        .hero h1 {
+          font-size: 25px;
+          line-height: 1.3;
+        }
+        .lead {
+          font-size: 13px;
+          line-height: 1.6;
+        }
+        .panel {
+          padding: 14px;
+          border-radius: 14px;
+          background: rgba(12, 18, 35, 0.9);
+          border: 1px solid rgba(255, 255, 255, 0.06);
+          backdrop-filter: blur(8px);
+        }
+        .input-row {
+          flex-direction: column;
+          align-items: stretch;
+        }
+        input,
+        .btn-primary,
+        .btn-ghost {
+          width: 100%;
+        }
+        .btn-ghost {
+          text-align: center;
+        }
+        .support-indicator {
+          width: 140px;
+          height: 140px;
+        }
+        .support-core {
+          font-size: 48px;
+        }
+        .result-card {
+          min-height: 120px;
+          border-radius: 14px;
+          background: rgba(255, 255, 255, 0.05);
+          border-color: rgba(255, 255, 255, 0.08);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <div class="content">
+        <div class="hero">
+          <div class="logo">
+            <img src="logo.png" alt="الشعار" />
+          </div>
+          <div class="badge">فحص فوري لدعم eSIM</div>
+          <h1>هل يدعم جهازك شريحة eSIM؟</h1>
+          <p class="lead">
+            اكتب اسم الجهاز أو اختره من الاقتراحات، واعرف فوراً إن كان يدعم
+            eSIM.
+          </p>
+        </div>
+
+        <div class="panel" id="manualSection">
+          <div class="label-row">
+            <div class="label">اسم الجهاز</div>
+          </div>
+          <div class="input-row">
+            <input
+              id="deviceInput"
+              autocomplete="off"
+              placeholder="مثال: iPhone 15 Pro Max أو Galaxy S24"
+            />
+            <button class="btn-primary" id="searchBtn">ابحث</button>
+          </div>
+          <ul class="suggestions" id="suggestions"></ul>
+          <button class="btn-primary btn-full" id="checkBtn">
+            تحقق من eSIM
+          </button>
+        </div>
+
+        <div class="status" id="status"></div>
+
+        <div class="support-wrap">
+          <div
+            class="support-indicator"
+            id="supportIndicator"
+            data-state="idle"
+          >
+            <div class="support-ring"></div>
+            <div class="support-core">
+              <span id="supportSymbol">•</span>
+            </div>
+          </div>
+          <div class="support-label" id="supportLabel">جاهز للفحص</div>
+        </div>
+
+        <div class="result-card" id="result"></div>
+      </div>
+    </div>
+
+    <script>
+      const deviceInput = document.getElementById("deviceInput");
+      const suggestionsEl = document.getElementById("suggestions");
+      const checkBtn = document.getElementById("checkBtn");
+      const searchBtn = document.getElementById("searchBtn");
+      const statusEl = document.getElementById("status");
+      const resultEl = document.getElementById("result");
+      const supportIndicator = document.getElementById("supportIndicator");
+      const supportSymbol = document.getElementById("supportSymbol");
+      const supportLabel = document.getElementById("supportLabel");
+      const manualSection = document.getElementById("manualSection");
+
+      let selectedDeviceId = null;
+      let lastQuery = "";
+      let searchTimer = null;
+
+      function setSupportState(state) {
+        supportIndicator.dataset.state = state;
+        const symbols = {
+          idle: "•",
+          loading: "…",
+          success: "✓",
+          fail: "✕",
+          unknown: "?",
+        };
+        supportSymbol.textContent = symbols[state] || "•";
+
+        const labels = {
+          idle: "جاهز للفحص",
+          loading: "جار الفحص...",
+          success: "الجهاز يدعم eSIM",
+          fail: "لا يظهر دعم eSIM",
+          unknown: "لم تتوفر معلومات كافية",
+        };
+        supportLabel.textContent = labels[state] || "";
+      }
+
+      function setStatus(text) {
+        statusEl.textContent = text || "";
+      }
+
+      function renderResult(payload) {
+        if (!payload) {
+          resultEl.innerHTML = "";
+          return;
+        }
+
+        let tagClass = "unknown";
+        let tagText = "لم تتوفر بيانات كافية";
+
+        if (payload.supportsEsim === true) {
+          tagClass = "ok";
+          tagText = "يدعم eSIM";
+        } else if (payload.supportsEsim === false) {
+          tagClass = "bad";
+          tagText = "لا يدعم eSIM";
+        }
+
+        const simRaw = payload.simRaw
+          ? `<div class="sim-note">مذكور في تفاصيل الشرائح: ${payload.simRaw}</div>`
+          : "";
+
+        resultEl.innerHTML = `
+          <div class="tag ${tagClass}">${tagText}</div>
+          <div>الجهاز: <strong>${payload.deviceName || lastQuery}</strong></div>
+          ${
+            payload.message
+              ? `<div style="margin-top:6px;">${payload.message}</div>`
+              : ""
+          }
+          ${simRaw}
+        `;
+      }
+
+      function clearSuggestions(message) {
+        if (message) {
+          suggestionsEl.innerHTML = `<li class="suggestion" style="cursor:default; border-style:dashed;">${message}</li>`;
+        } else {
+          suggestionsEl.innerHTML = "";
+        }
+      }
+
+      async function fetchSuggestions(query) {
+        try {
+          const res = await fetch("http://localhost:3000/api/search-devices", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ query }),
+          });
+          const data = await res.json();
+          if (!data || !Array.isArray(data.results)) {
+            clearSuggestions("لم نجد اقتراحات.");
+            return;
+          }
+
+          if (data.results.length === 0) {
+            clearSuggestions("لا توجد نتائج مطابقة.");
+            return;
+          }
+
+          suggestionsEl.innerHTML = "";
+          data.results.forEach((item) => {
+            const li = document.createElement("li");
+            li.className = "suggestion";
+            li.dataset.id = item.id;
+            li.dataset.name = item.name;
+            li.innerHTML = `
+              <div>
+                <div class="suggestion-title">${item.name}</div>
+                ${
+                  item.brand
+                    ? `<div class="suggestion-brand">${item.brand}</div>`
+                    : ""
+                }
+              </div>
+              <span style="color:#d97706; font-weight:700;">اختيار</span>
+            `;
+
+            li.addEventListener("click", () => {
+              deviceInput.value = item.name;
+              selectedDeviceId = item.id;
+              lastQuery = item.name;
+              clearSuggestions();
+              checkDevice();
+            });
+
+            suggestionsEl.appendChild(li);
+          });
+        } catch (err) {
+          console.error(err);
+          clearSuggestions("تعذر جلب الاقتراحات الآن.");
+        }
+      }
+
+      async function checkDevice() {
+        const name = deviceInput.value.trim();
+        if (!name && !selectedDeviceId) {
+          alert("اكتب اسم الجهاز أولاً.");
+          return;
+        }
+
+        lastQuery = name;
+        setSupportState("loading");
+        setStatus("جار الفحص...");
+        renderResult(null);
+        checkBtn.disabled = true;
+        searchBtn.disabled = true;
+
+        try {
+          const res = await fetch("http://localhost:3000/api/check-esim", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              query: name,
+              deviceId: selectedDeviceId,
+            }),
+          });
+
+          const data = await res.json();
+          checkBtn.disabled = false;
+          searchBtn.disabled = false;
+          setStatus("");
+
+          if (data.error) {
+            setSupportState("unknown");
+            resultEl.innerHTML = `<div style="color:#fca5a5;">${data.error}</div>`;
+            return;
+          }
+
+          renderResult(data);
+
+          if (data.supportsEsim === true) setSupportState("success");
+          else if (data.supportsEsim === false) setSupportState("fail");
+          else setSupportState("unknown");
+        } catch (err) {
+          console.error(err);
+          checkBtn.disabled = false;
+          searchBtn.disabled = false;
+          setStatus("");
+          setSupportState("unknown");
+          resultEl.innerHTML = `<div style="color:#fca5a5;">حصل خطأ أثناء الاتصال بالخادم: ${err.message}</div>`;
+        }
+      }
+
+      function handleSearchInput() {
+        selectedDeviceId = null;
+        const q = deviceInput.value.trim();
+        if (!q) {
+          clearSuggestions();
+          return;
+        }
+
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => fetchSuggestions(q), 250);
+      }
+
+      window.addEventListener("load", () => {
+        manualSection.classList.remove("hidden");
+        setStatus("اكتب اسم الجهاز أو اختره من الاقتراحات ثم اضغط تحقق.");
+      });
+
+      deviceInput.addEventListener("input", handleSearchInput);
+      searchBtn.addEventListener("click", () => {
+        const q = deviceInput.value.trim();
+        if (!q) {
+          alert("اكتب اسم الجهاز أولاً.");
+          return;
+        }
+        fetchSuggestions(q);
+      });
+      checkBtn.addEventListener("click", checkDevice);
+    </script>
+
+    <footer
+      style="text-align: center; color: #cbd5e1; font-size: 12px; padding: 16px"
+    >
+      © 2025 موقع الكترون - جميع الحقوق محفوظة.
+    </footer>
+  </body>
+</html>
