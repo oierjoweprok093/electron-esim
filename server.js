@@ -1,12 +1,19 @@
+const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const gsmarena = require("gsmarena-api");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
+const publicDir = path.join(__dirname, "public");
+app.use(
+  express.static(publicDir, {
+    index: "index.html",
+  })
+);
 
 // Simple in-memory cache to avoid repeating the same lookups.
 const cache = new Map();
@@ -215,6 +222,11 @@ app.post("/api/check-esim", async (req, res) => {
       details: err.message,
     });
   }
+});
+
+// Serve the frontend for any GET (fallback)
+app.get("*", (req, res) => {
+  res.sendFile(path.join(publicDir, "index.html"));
 });
 
 app.listen(PORT, () => {
