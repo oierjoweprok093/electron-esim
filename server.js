@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
-const publicDir = path.join(__dirname, "public");
+const publicDir = __dirname;
 app.use(
   express.static(publicDir, {
     index: "index.html",
